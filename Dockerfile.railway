@@ -31,8 +31,8 @@ ENV VITE_APP_NAME="Audio Guestbook Platform"
 ENV VITE_APP_DESCRIPTION="Collect multimedia messages from your event guests"
 ENV VITE_DEV_MODE=false
 
-# Build the application
-RUN npm run build
+# Build the application with increased memory limit and verbose output
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build -- --verbose
 
 # Production stage
 FROM nginx:alpine AS production

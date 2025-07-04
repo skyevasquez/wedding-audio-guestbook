@@ -24,7 +24,8 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false, // Disable sourcemaps for faster build
+    minify: 'esbuild', // Use esbuild for faster minification
     rollupOptions: {
       output: {
         manualChunks: {
@@ -36,6 +37,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', '@clerk/clerk-react'],
+    include: ['react', 'react-dom', '@clerk/clerk-react', 'convex/react'],
   },
 })
