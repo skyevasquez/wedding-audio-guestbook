@@ -1,3 +1,6 @@
+# Railway-specific Dockerfile for frontend deployment
+# This builds from the root context but focuses on the frontend
+
 # Multi-stage build for production
 FROM node:18-alpine AS builder
 
@@ -7,21 +10,21 @@ RUN apk add --no-cache git
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy frontend package files
+COPY frontend/package*.json ./
 
 # Clear npm cache and install dependencies
 RUN npm cache clean --force && \
     npm install --frozen-lockfile --production=false
 
-# Copy source code
-COPY . .
+# Copy frontend source code
+COPY frontend/ .
 
 # Set NODE_ENV for build
 ENV NODE_ENV=production
 
-# Build the application with verbose output
-RUN npm run build --verbose
+# Build the application
+RUN npm run build
 
 # Production stage
 FROM nginx:alpine AS production
@@ -30,7 +33,7 @@ FROM nginx:alpine AS production
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port
 EXPOSE 80
