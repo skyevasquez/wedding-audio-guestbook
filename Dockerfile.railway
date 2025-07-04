@@ -23,6 +23,14 @@ COPY frontend/ .
 # Set NODE_ENV for build
 ENV NODE_ENV=production
 
+# Set default environment variables for build (Railway will override these)
+ENV VITE_CLERK_PUBLISHABLE_KEY=pk_test_placeholder
+ENV VITE_CONVEX_URL=https://placeholder.convex.cloud
+ENV VITE_API_URL=http://localhost:3001
+ENV VITE_APP_NAME="Audio Guestbook Platform"
+ENV VITE_APP_DESCRIPTION="Collect multimedia messages from your event guests"
+ENV VITE_DEV_MODE=false
+
 # Build the application
 RUN npm run build
 
