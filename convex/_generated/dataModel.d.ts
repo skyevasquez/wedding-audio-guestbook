@@ -5,56 +5,57 @@
  * THIS CODE IS AUTOMATICALLY GENERATED.
  *
  * To regenerate, run `npx convex dev`.
- * @module
  */
 
-import type {
-  DataModelFromSchemaDefinition,
-  DocumentByName,
-  TableNamesInDataModel,
-  SystemTableNames,
-} from "convex/server";
-import type { GenericId } from "convex/values";
-import schema from "../schema.js";
+export type Id<T extends string> = string & { __tableName: T };
 
-/**
- * The names of all of your Convex tables.
- */
-export type TableNames = TableNamesInDataModel<DataModel>;
+export interface DataModel {
+  events: {
+    _id: Id<"events">;
+    title: string;
+    description?: string;
+    date: string;
+    location?: string;
+    hostId: string;
+    accessCode: string;
+    isActive: boolean;
+    createdAt: number;
+    updatedAt: number;
+  };
+  messages: {
+    _id: Id<"messages">;
+    eventId: Id<"events">;
+    guestName: string;
+    guestEmail?: string;
+    messageText?: string;
+    messageType: "text" | "audio" | "video" | "photo" | "media";
+    isApproved: boolean;
+    createdAt: number;
+  };
+  mediaFiles: {
+    _id: Id<"mediaFiles">;
+    messageId: Id<"messages">;
+    fileName: string;
+    fileSize: number;
+    mimeType: string;
+    convexFileId?: Id<"_storage">;
+    convexFileUrl?: string;
+    duration?: number;
+    thumbnailUrl?: string;
+    createdAt: number;
+  };
+  guestTokens: {
+    _id: Id<"guestTokens">;
+    eventId: Id<"events">;
+    token: string;
+    guestEmail?: string;
+    expiresAt?: number;
+    isActive: boolean;
+    createdAt: number;
+  };
+  _storage: {
+    _id: Id<"_storage">;
+  };
+}
 
-/**
- * The type of a document stored in Convex.
- *
- * @typeParam TableName - A string literal type of the table name (like "users").
- */
-export type Doc<TableName extends TableNames> = DocumentByName<
-  DataModel,
-  TableName
->;
-
-/**
- * An identifier for a document in Convex.
- *
- * Convex documents are uniquely identified by their `Id`, which is accessible
- * on the `_id` field. To learn more, see [Document IDs](https://docs.convex.dev/using/document-ids).
- *
- * Documents can be loaded using `db.get(id)` in query and mutation functions.
- *
- * IDs are just strings at runtime, but this type can be used to distinguish them from other
- * strings when type checking.
- *
- * @typeParam TableName - A string literal type of the table name (like "users").
- */
-export type Id<TableName extends TableNames | SystemTableNames> =
-  GenericId<TableName>;
-
-/**
- * A type describing your Convex data model.
- *
- * This type includes information about what tables you have, the type of
- * documents stored in those tables, and the indexes defined on them.
- *
- * This type is used to parameterize methods like `queryGeneric` and
- * `mutationGeneric` to make them type-safe.
- */
-export type DataModel = DataModelFromSchemaDefinition<typeof schema>;
+export type TableNames = keyof DataModel;

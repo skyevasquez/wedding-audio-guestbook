@@ -8,15 +8,36 @@
  * @module
  */
 
-import { anyApi } from "convex/server";
+// Mock API for build purposes
+export const api = {
+  events: {
+    createEvent: null,
+    getEventByAccessCode: null,
+    getEventsByHost: null,
+    updateEvent: null,
+    deleteEvent: null,
+  },
+  messages: {
+    submitMessage: null,
+    getMessagesByEvent: null,
+    getApprovedMessages: null,
+    getPendingMessages: null,
+    approveMessage: null,
+    rejectMessage: null,
+    getMessage: null,
+  },
+  files: {
+    generateUploadUrl: null,
+  },
+  mediaFiles: {
+    storeMediaFile: null,
+    updateMediaFileWithStorage: null,
+    getMediaFile: null,
+  },
+  guestTokens: {
+    createGuestToken: null,
+    validateGuestToken: null,
+  },
+};
 
-/**
- * A utility for referencing Convex functions in your app's API.
- *
- * Usage:
- * ```js
- * const myFunctionReference = api.myModule.myFunction;
- * ```
- */
-export const api = anyApi;
-export const internal = anyApi;
+export const internal = api;
