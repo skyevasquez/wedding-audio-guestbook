@@ -1,4 +1,5 @@
-FROM node:18-alpine
+# Multi-stage build for production
+FROM node:18-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -6,22 +7,26 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install all dependencies (including devDependencies for build)
 RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S frontend -u 1001
+# Build the application
+RUN npm run build
 
-# Change ownership of the app directory
-RUN chown -R frontend:nodejs /app
-USER frontend
+# Production stage
+FROM nginx:alpine AS production
+
+# Copy built assets from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port
-EXPOSE 3000
+EXPOSE 80
 
-# Start the development server
-CMD ["npm", "run", "dev", "--", "--host"]
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
